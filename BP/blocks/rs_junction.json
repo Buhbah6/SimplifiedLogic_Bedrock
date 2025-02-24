@@ -129,7 +129,7 @@
 				"components": {
 					"minecraft:material_instances": {
 						"*": {
-							"texture": "ican_rs_junction_bottom",
+							"texture": "ican_rs_junction_top",
 							"render_method": "alpha_test"
 						}
 					},
@@ -141,7 +141,7 @@
 				"components": {
 					"minecraft:material_instances": {
 						"*": {
-							"texture": "ican_rs_junction_top",
+							"texture": "ican_rs_junction_bottom",
 							"render_method": "alpha_test"
 						}
 					},

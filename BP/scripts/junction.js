@@ -3,42 +3,24 @@ import { BlockPermutation, world, system } from "@minecraft/server";
 /** @type {import("@minecraft/server").BlockCustomComponent} */
 const redstoneJunctionDetectionComponent = {
     onTick(event) {
-        let directionalInput = [0, 0, 0, 0]
+        let directionalInput = [0, 0, 0, 0];
         let direction = event.block.permutation.getState("ican:facing_direction");
-        switch (direction) {
-            case 0: // Facing North
-                directionalInput[0] = event.block.north(1).getRedstonePower(); // Up
-                directionalInput[1] = event.block.south(1).getRedstonePower(); // Down
-                directionalInput[2] = event.block.west(1).getRedstonePower(); // Left
-                directionalInput[3] = event.block.east(1).getRedstonePower(); // Right
-                compareInputs(directionalInput[0], directionalInput[1], 1, event.block)
-                compareInputs(directionalInput[2], directionalInput[3], 2, event.block)
-                break;
-            case 1: // Facing South
-                directionalInput[0] = event.block.south(1).getRedstonePower(); // Up
-                directionalInput[1] = event.block.north(1).getRedstonePower(); // Down
-                directionalInput[2] = event.block.east(1).getRedstonePower(); // Left
-                directionalInput[3] = event.block.west(1).getRedstonePower(); // Right
-                compareInputs(directionalInput[0], directionalInput[1], 1, event.block)
-                compareInputs(directionalInput[2], directionalInput[3], 2, event.block)
-                break;
-            case 2: // Facing West
-                directionalInput[0] = event.block.west(1).getRedstonePower(); // Up
-                directionalInput[1] = event.block.east(1).getRedstonePower(); // Down
-                directionalInput[2] = event.block.south(1).getRedstonePower(); // Left
-                directionalInput[3] = event.block.north(1).getRedstonePower(); // Right
-                compareInputs(directionalInput[0], directionalInput[1], 1, event.block)
-                compareInputs(directionalInput[2], directionalInput[3], 2, event.block)
-                break;
-            case 3: // Facing East
-                directionalInput[0] = event.block.east(1).getRedstonePower(); // Up
-                directionalInput[1] = event.block.west(1).getRedstonePower(); // Down
-                directionalInput[2] = event.block.north(1).getRedstonePower(); // Left
-                directionalInput[3] = event.block.south(1).getRedstonePower(); // Right
-                compareInputs(directionalInput[0], directionalInput[1], 1, event.block)
-                compareInputs(directionalInput[2], directionalInput[3], 2, event.block)
-                break;
-        }
+
+        const directionOffsets = [
+            { up: "north", down: "south", left: "west", right: "east" }, // North
+            { up: "south", down: "north", left: "east", right: "west" }, // South
+            { up: "west", down: "east", left: "south", right: "north" }, // West
+            { up: "east", down: "west", left: "north", right: "south" }  // East
+        ];
+
+        const offsets = directionOffsets[direction];
+
+        directionalInput[0] = event.block[offsets.up](1).typeId != "minecraft:powered_repeater" ? event.block[offsets.up](1).getRedstonePower() : 0; // Up
+        directionalInput[1] = event.block[offsets.down](1).typeId != "minecraft:powered_repeater" ? event.block[offsets.down](1).getRedstonePower() : 0; // Down
+        directionalInput[2] = event.block[offsets.left](1).typeId != "minecraft:powered_repeater" ? event.block[offsets.left](1).getRedstonePower() : 0; // Left
+        directionalInput[3] = event.block[offsets.right](1).typeId != "minecraft:powered_repeater" ? event.block[offsets.right](1).getRedstonePower() : 0; // Right
+        compareInputs(directionalInput[0], directionalInput[1], 1, event.block);
+        compareInputs(directionalInput[2], directionalInput[3], 2, event.block);
     }
 }
 
